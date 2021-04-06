@@ -4,7 +4,7 @@
   "package": "eliarbogast.evolution.mod.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "TickMixin"
+    "ColorTickMixin"
   ],
   "client": [
   ],

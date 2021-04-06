@@ -6,7 +6,7 @@
   "name": "Evolution Mod",
   "description": "This mod aims to implement realistic evolution into Minecraft",
   "authors": [
-    "techperson1"
+    "Eli Arbogast"
   ],
   "contact": {
     "homepage": "",
@@ -19,11 +19,11 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "techperson1.evolution.mod.Evolution"
+      "eliarbogast.evolution.mod.Evolution"
     ]
   },
   "mixins": [
-
+    "evolution.mixins.json"
   ],
 
   "depends": {

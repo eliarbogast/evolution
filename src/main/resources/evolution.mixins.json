@@ -1,12 +1,12 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.fabricmc.example.mixin",
+  "package": "eliarbogast.evolution.mod.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "TickMixin"
   ],
   "client": [
-    "ExampleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

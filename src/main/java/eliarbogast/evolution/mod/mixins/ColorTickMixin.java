@@ -19,7 +19,7 @@ public abstract class ColorTickMixin {
         public void mobTick(CallbackInfo info){
         DyeColor[] colors = {DyeColor.GREEN, DyeColor.BLUE, DyeColor.MAGENTA, DyeColor.LIME};
         Random random = new Random();
-        int rand = random.nextInt(3);
+        int rand = random.nextInt(4);
         setColor(colors[rand]);
     }
 

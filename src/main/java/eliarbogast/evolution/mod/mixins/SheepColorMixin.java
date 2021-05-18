@@ -1,56 +1,50 @@
 package eliarbogast.evolution.mod.mixins;
 
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.feature.SheepWoolFeatureRenderer;
-import net.minecraft.client.render.entity.model.SheepEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.DyeColor;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import static eliarbogast.evolution.mod.utils.DyeUtils.DyeColors;
 
-@Mixin(SheepWoolFeatureRenderer.class)
-public class SheepColorMixin extends SheepWoolFeatureRenderer {
-    @Unique
-    private final int dummyField = 1;
-    public SheepColorMixin(FeatureRendererContext<SheepEntity, SheepEntityModel<SheepEntity>> featureRendererContext) {
-        super(featureRendererContext);
-    }
-    /**
-     * @author eliarbogast
-     */
-    @Overwrite
-    public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i,
-                       SheepEntity sheepEntity, float f, float g, float h, float j, float k, float l) {
-        if (!sheepEntity.isSheared() && !sheepEntity.isInvisible()) {
-            float v;
-            float w;
-            float x;
-            if (sheepEntity.hasCustomName() && "jeb_".equals(sheepEntity.getName().asString())) {
-                boolean m = true;
-                int n = sheepEntity.age / 25 + sheepEntity.getEntityId();
-                int o = DyeColor.values().length;
-                int p = n % o;
-                int q = (n + 1) % o;
-                float r = ((float)(sheepEntity.age % 25) + h) / 25.0F;
-                float[] fs = SheepEntity.getRgbColor(DyeColor.byId(p));
-                float[] gs = SheepEntity.getRgbColor(DyeColor.byId(q));
-                v = fs[0] * (1.0F - r) + gs[0] * r;
-                w = fs[1] * (1.0F - r) + gs[1] * r;
-                x = fs[2] * (1.0F - r) + gs[2] * r;
-            } else {
-                float[] hs = SheepEntity.getRgbColor(sheepEntity.getColor());
-                v = hs[0];
-                w = hs[1];
-                x = hs[2];
+@Mixin(SheepEntity.class)
+public class SheepColorMixin  {
+
+    @Inject(method = "getChildColor", at = @At("RETURN"), cancellable = true)
+    private void modifyChildColor(AnimalEntity firstParent, AnimalEntity secondParent, CallbackInfoReturnable<DyeColor> cir) {
+        DyeColor current = cir.getReturnValue();
+        //if % chance that a mutation occurs, set dye value to slightly different color
+            //define list  of colors in rainbow order, search list for current color and pick adjacent color
+        //list of names from dyeColor.java, cir.getName() -> look up in list of names, then grab adjacent then do
+        //dyeColor.byName which will give an object that can be set to the return value
+        double mutDouble = Math.random();
+        boolean mutate;
+
+        //mutate rate
+        mutate = mutDouble < 1.0;
+        if (mutate) {
+
+            double randDouble = Math.random();
+            int randAdd;
+            if(randDouble > 0.5){
+                randAdd = 1;
+            }
+            else{
+                randAdd = -1;
             }
 
-            render(this.getContextModel(), this.model, SKIN, matrixStack, vertexConsumerProvider, i, sheepEntity, f, g, j, k, l, h, v, w, x);
-        }System.out.println(dummyField);
-    }
+            for (int i=0; i<DyeColors.length; i++){
+                if(DyeColors[i].equals(current.getName())){
+                    int newColor = i + randAdd;
+                    DyeColor tempColor = DyeColor.byName(DyeColors[newColor], current);
+                    cir.setReturnValue(tempColor);
+                }
+            }
 
+        }
+    }
 
 }
 
